@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101321">
+  <meta name="description" content="An interactive Operating Systems CPU scheduling simulator for FCFS, SJF and Round Robin algorithms.">
+  <title>CPU Scheduling Lab | OSY Micro Project</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#top" aria-label="CPU Scheduling Lab home">
+        <span class="brand-mark">⏱</span>
+        <span><strong>SchedLab</strong><small>OPERATING SYSTEMS</small></span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <a class="nav-link active" href="#workspace"><span>▦</span> Simulator</a>
+      <a class="nav-link" href="#comparison"><span>◫</span> Comparison</a>
+      <a class="nav-link" href="#learn"><span>⌘</span> Learn the algorithms</a>
+      <div class="sidebar-footer">
+        <div class="status-dot"></div>
+        <div><strong>Local simulator</strong><small>No account required</small></div>
+      </div>
+    </aside>
+
+    <main id="top" class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">OSY MICRO PROJECT <span>/</span> CPU SCHEDULING</div>
+        <div class="topbar-right"><span class="live-dot"></span><span>Interactive lab</span><span class="version-tag">v1.0</span></div>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> PROCESS MANAGEMENT</div>
+          <h1>CPU Scheduling <span>Simulator</span></h1>
+          <p>Visualize how an operating system allocates CPU time. Run three classic algorithms, inspect each Gantt chart, and compare their performance side-by-side.</p>
+          <div class="algorithm-chips"><span class="chip chip-fcfs">01&nbsp; FCFS</span><span class="chip chip-sjf">02&nbsp; SJF</span><span class="chip chip-rr">03&nbsp; ROUND ROBIN</span></div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="cpu-core"><span>CPU</span><strong>↔</strong><small>SCHEDULER</small></div>
+          <div class="orbit-node node-one">P1</div><div class="orbit-node node-two">P2</div><div class="orbit-node node-three">P3</div>
+        </div>
+      </section>
+
+      <section id="workspace" class="panel input-panel">
+        <div class="section-heading">
+          <div><div class="step-label"><span>01</span> INPUT CONFIGURATION</div><h2>Configure your processes</h2><p>Enter each process’s arrival time and CPU burst time.</p></div>
+          <button id="sampleBtn" class="button button-quiet" type="button"><span>↻</span> Load sample data</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="process-table">
+            <thead><tr><th>PROCESS ID</th><th>ARRIVAL TIME <small>(AT)</small></th><th>BURST TIME <small>(BT)</small></th><th class="action-col">ACTION</th></tr></thead>
+            <tbody id="processRows"></tbody>
+          </table>
+        </div>
+        <div class="table-actions"><button id="addProcessBtn" class="button button-outline" type="button">＋ Add process</button><span class="helper-text">Whole-number time units · Maximum 20 processes</span></div>
+
+        <div class="control-row">
+          <div class="quantum-control"><label for="timeQuantum">ROUND ROBIN TIME QUANTUM</label><div class="quantum-input"><button type="button" id="quantumDown" aria-label="Decrease time quantum">−</button><input id="timeQuantum" type="number" min="1" max="10000" value="2"><button type="button" id="quantumUp" aria-label="Increase time quantum">＋</button></div><small>Used only by Round Robin</small></div>
+          <div class="control-note"><span class="info-icon">i</span><span><strong>Scheduling assumptions</strong><br>FCFS and SJF are non-preemptive. Round Robin is preemptive. Context-switch overhead is not included.</span></div>
+          <button id="simulateBtn" class="button button-primary" type="button"><span>▶</span> Run simulation <span class="button-arrow">↗</span></button>
+        </div>
+        <div id="errorBox" class="error-box" role="alert" hidden></div>
+      </section>
+
+      <section id="results" class="results-section" hidden>
+        <div class="section-heading result-heading">
+          <div><div class="step-label"><span>02</span> SIMULATION OUTPUT</div><h2>Scheduling results</h2><p>Each algorithm used the same process set for a fair comparison.</p></div>
+          <div class="run-status"><span class="status-check">✓</span> Simulation complete</div>
+        </div>
+        <div id="metricCards" class="metric-grid"></div>
+        <div id="algorithmResults" class="algorithm-results"></div>
+      </section>
+
+      <section id="comparison" class="panel comparison-panel" hidden>
+        <div class="section-heading"><div><div class="step-label"><span>03</span> PERFORMANCE ANALYSIS</div><h2>Compare algorithms</h2><p>Lower waiting and turnaround times are generally preferable, but results depend on the workload.</p></div></div>
+        <div class="table-wrap comparison-table-wrap"><table class="comparison-table"><thead><tr><th>ALGORITHM</th><th>AVG. WAITING</th><th>AVG. TURNAROUND</th><th>AVG. RESPONSE</th><th>CPU UTILIZATION</th><th>THROUGHPUT</th></tr></thead><tbody id="comparisonRows"></tbody></table></div>
+        <div id="insightText" class="insight-line"></div>
+      </section>
+
+      <section id="learn" class="learn-section">
+        <div class="section-heading"><div><div class="step-label"><span>04</span> QUICK REFERENCE</div><h2>Understand the algorithms</h2><p>Use these notes to prepare for your practical demonstration and viva.</p></div></div>
+        <div class="learn-grid">
+          <article class="learn-card"><div class="learn-top"><span class="learn-number fcfs-number">01</span><span class="complexity">Simple queue</span></div><h3>First Come, First Served</h3><p>Processes run in the order they arrive. It is easy to implement, but a long process can make shorter processes wait.</p><div class="formula">Order: Arrival time → oldest first</div></article>
+          <article class="learn-card"><div class="learn-top"><span class="learn-number sjf-number">02</span><span class="complexity">Shortest burst first</span></div><h3>Shortest Job First</h3><p>Among the processes that have arrived, the one with the smallest burst time runs next. This version is non-preemptive.</p><div class="formula">Choice: Minimum burst among ready jobs</div></article>
+          <article class="learn-card"><div class="learn-top"><span class="learn-number rr-number">03</span><span class="complexity">Time slicing</span></div><h3>Round Robin</h3><p>Each ready process receives up to one time quantum. Unfinished processes return to the back of the ready queue.</p><div class="formula">Run time: min(quantum, remaining burst)</div></article>
+        </div>
+        <div class="formula-panel"><div><span class="formula-symbol">ƒx</span><strong>Key OS formulas</strong></div><div class="formula-items"><span><b>Turnaround Time</b><code>Completion − Arrival</code></span><span><b>Waiting Time</b><code>Turnaround − Burst</code></span><span><b>Response Time</b><code>First Start − Arrival</code></span></div></div>
+      </section>
+
+      <footer class="footer"><span>SchedLab · OSY Micro Project</span><span>Built for learning · Run locally on your computer</span></footer>
+    </main>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
